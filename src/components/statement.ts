@@ -30,30 +30,34 @@ function playFor (aPerformance:PerformanceType):PlayObjType{
     return plays[aPerformance.playID]
 }
 
-export function statement (invoice:InvoiceType, plays: PlaysObjType) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat('en-US',
+function volumeCreditsFor (aPerformance:PerformanceType){
+    let result = 0;
+        result += Math.max(aPerformance.audience-30,0);
+        if ('comedy'===playFor(aPerformance).type) result +=Math.floor(aPerformance.audience/5);
+        return result
+}
+
+function formatFor (aNumber:number){
+    return new Intl.NumberFormat('en-US',
                     {
                         style: 'currency', 
                         currency: 'USD',
                         minimumFractionDigits: 2
-                    }).format;
+                    }).format(aNumber)
+}
+
+export function statement (invoice:InvoiceType, plays: PlaysObjType) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
 
     for (let perf of invoice.performances){
-        // const play = playFor(perf);
-        let thisAmount = amountFor(perf);
-        // add volume credits 
-        volumeCredits += Math.max(perf.audience-30,0);
-        // add extra credit for every ten comedy attendes 
-        if ('comedy'===playFor(perf).type) volumeCredits +=Math.floor(perf.audience/5);
-
+        volumeCredits += volumeCreditsFor(perf);
         //print line for this order 
-        result += `${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount +=thisAmount;
+        result += `${playFor(perf).name}: ${formatFor(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+        totalAmount +=amountFor(perf);
     }
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
+    result += `Amount owed is ${formatFor(totalAmount/100)}\n`;
     result += `You earned $${volumeCredits} credits\n`;
 
     return result

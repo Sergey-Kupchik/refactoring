@@ -1,6 +1,6 @@
 
 import { invoices, plays } from './state';
-import { InvoiceType, PerformanceType, PlayObjType, PlaysObjType } from './types';
+import { InvoiceType, PerformanceType, PlayObjType, PlaysObjType, aPerformanceType } from './types';
 
 
 
@@ -73,12 +73,17 @@ function renderPlainText(data: InvoiceType, plays: PlaysObjType) {
     }
 }
 
-export function  statement (invoice: InvoiceType, plays: PlaysObjType) {
+export function statement(invoice: InvoiceType, plays: PlaysObjType) {
     const statementData = {} as InvoiceType
-    statementData.customer = invoice.customer; 
-    statementData.performances = invoice.performances; 
-    return renderPlainText(statementData, plays)
-}; 
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    return renderPlainText(statementData, plays);
+
+    function enrichPerformance(aPerformance: aPerformanceType) {
+        const result = Object.assign({}, aPerformance)
+        return result
+    }
+};
 
 let brutto = statement(invoices, plays);
 

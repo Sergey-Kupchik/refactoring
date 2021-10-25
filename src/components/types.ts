@@ -19,9 +19,20 @@ export type PerformanceType = {
     'audience': number
 }
 
+export type aPerformanceType = {
+    'playID': PlayShortName,
+    'audience': number,
+     play: PlayObjType,
+     amount: number, 
+     volumeCredits: number 
+}
+
+
 export type InvoiceType = {
     'customer': 'BigCo',
-    'performances': Array<PerformanceType>
+    'performances': Array<aPerformanceType>
 }
+
+
 
 // export default {InvoiceType, PerformanceType, PlaysObjType, PlayType, PlayName, PlayShortName}; 

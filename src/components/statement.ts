@@ -5,9 +5,9 @@ import { InvoiceType, PerformanceType, PlayObjType, PlaysObjType } from './types
 
 
 
-function renderPlainText(invoice: InvoiceType, plays: PlaysObjType) {
-    let result = `Statement for ${invoice.customer}\n`;
-    for (let perf of invoice.performances) {
+function renderPlainText(data: InvoiceType, plays: PlaysObjType) {
+    let result = `Statement for ${data.customer}\n`;
+    for (let perf of data.performances) {
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${usd(totalAmount())}\n`;
@@ -16,7 +16,7 @@ function renderPlainText(invoice: InvoiceType, plays: PlaysObjType) {
 
     function totalVolumeCredits() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += volumeCreditsFor(perf);
         }
         return result;
@@ -24,7 +24,7 @@ function renderPlainText(invoice: InvoiceType, plays: PlaysObjType) {
 
     function totalAmount() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += amountFor(perf);
         }
         return result
@@ -74,7 +74,10 @@ function renderPlainText(invoice: InvoiceType, plays: PlaysObjType) {
 }
 
 export function  statement (invoice: InvoiceType, plays: PlaysObjType) {
-    return renderPlainText(invoice, plays)
+    const statementData = {} as InvoiceType
+    statementData.customer = invoice.customer; 
+    statementData.performances = invoice.performances; 
+    return renderPlainText(statementData, plays)
 }; 
 
 let brutto = statement(invoices, plays);

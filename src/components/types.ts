@@ -27,10 +27,11 @@ export type aPerformanceType = {
      volumeCredits: number 
 }
 
-
 export type InvoiceType = {
     'customer': 'BigCo',
-    'performances': Array<aPerformanceType>
+    'performances': Array<aPerformanceType>,
+    'totalAmount': number,
+    'totalVolumeCredits': number,
 }
 
 

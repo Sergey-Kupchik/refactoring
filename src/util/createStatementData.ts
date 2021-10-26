@@ -10,7 +10,7 @@ function createStatementData(invoice: InvoiceType, plays: PlaysObjType) {
     return statementData;
 
     function enrichPerformance(aPerformance: aPerformanceType) {
-        const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance))
+        const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance))
         const result = Object.assign({}, aPerformance)
         result.play = calculator.play;
         result.amount = calculator.amount;
@@ -21,7 +21,6 @@ function createStatementData(invoice: InvoiceType, plays: PlaysObjType) {
     function playFor(aPerformance: PerformanceType): PlayObjType {
         return plays[aPerformance.playID]
     }
-
     function totalAmount(data: InvoiceType) {
         return data.performances.reduce((total, p) => total + p.amount, 0)
     }
@@ -65,4 +64,9 @@ class PerformanceCalculator {
         return result
     }
 }
+
+function createPerformanceCalculator(aPerformance: aPerformanceType, aPlay: PlayObjType) {
+    return new PerformanceCalculator(aPerformance, aPlay)
+}
+
 export default createStatementData;

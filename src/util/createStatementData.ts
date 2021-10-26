@@ -29,6 +29,16 @@ function createStatementData(invoice: InvoiceType, plays: PlaysObjType) {
     }
 }
 
+
+
+function createPerformanceCalculator(aPerformance: aPerformanceType, aPlay: PlayObjType) {
+    switch (aPlay.type) {
+        case 'tragedy': return new TragedyCalculator(aPerformance, aPlay);
+        case 'comedy': return new ComedyCalculator(aPerformance, aPlay);
+        default: throw new Error(`unknown type: ${aPlay.type}`);
+    }
+}
+
 class PerformanceCalculator {
     performance: aPerformanceType;
     play: PlayObjType;
@@ -36,19 +46,8 @@ class PerformanceCalculator {
         this.performance = aPerformance
         this.play = aPlay
     }
-    get volumeCredits() {
-        let result = 0;
-        result += Math.max(this.performance.audience - 30, 0);
-        if ('comedy' === this.play.type) result += Math.floor(this.performance.audience / 5);
-        return result
-    }
-}
-
-function createPerformanceCalculator(aPerformance: aPerformanceType, aPlay: PlayObjType) {
-    switch (aPlay.type) {
-        case 'tragedy': return new TragedyCalculator(aPerformance, aPlay);
-        case 'comedy': return new ComedyCalculator(aPerformance, aPlay);
-        default: throw new Error(`unknown type: ${aPlay.type}`);
+    get volumeCredits(): number {
+        return Math.max(this.performance.audience - 30, 0);
     }
 }
 class TragedyCalculator extends PerformanceCalculator {
@@ -60,8 +59,6 @@ class TragedyCalculator extends PerformanceCalculator {
         return result
     }
 }
-
-
 class ComedyCalculator extends PerformanceCalculator {
     get amount() {
         let result = 30000;
@@ -70,6 +67,9 @@ class ComedyCalculator extends PerformanceCalculator {
         }
         result += 300 * this.performance.audience;
         return result
+    }
+    get volumeCredits(): number {
+        return super.volumeCredits + Math.floor(this.performance.audience / 5);
     }
 }
 
